@@ -507,6 +507,18 @@
         
         /* Mobile optimizations */
         @media (max-width: 768px) {
+            .combined-cycles {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+                padding: 10px;
+                overflow-x: visible;
+            }
+            
+            .combined-day {
+                margin-right: 0;
+            }
+            
             .daily-log-grid {
                 grid-template-columns: 1fr !important;
                 grid-template-rows: none !important;
@@ -955,7 +967,7 @@
             
             // Mobile vs desktop day count
             const isMobile = window.innerWidth <= 768;
-            const totalDays = isMobile ? 15 : 18;
+            const totalDays = isMobile ? 15 : 19;
             const beforeToday = isMobile ? 7 : 9;
             const startOffset = daysSinceLastPeriod - beforeToday;
             
