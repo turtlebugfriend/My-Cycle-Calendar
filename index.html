@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)file:///C:/Users/Lizzy%20Lukrich/Downloads/lunar_cycle_tracker_final.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Lunar Calendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #faf8f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(139, 115, 85, 0.1);
+        }
+        
+        h1 {
+            color: #8b7355;
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #a89080;
+            margin-bottom: 40px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        
+        .current-status {
+            background: linear-gradient(135deg, #c4a57b 0%, #a0685a 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .current-status > div {
+            padding: 5px 0;
+        }
+        
+        .current-status strong {
+            font-weight: 600;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            background: #fafaf8;
+            border-radius: 12px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-size: 12px;
+            color: #8b7355;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        input[type="date"],
+        input[type="number"] {
+            padding: 12px 16px;
+            border: 2px solid #e8dcc8;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #6b5d52;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #c4a57b;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: #8b7355;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        button:hover {
+            background: #6b5d52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 40px 0 5px 0;
+            padding: 20px 0;
+        }
+        
+        .cycle-track {
+            margin-bottom: 40px;
+        }
+        
+        .track-title {
+            font-size: 14px;
+            color: #8b7355;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .days-container {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        
+        .combined-cycles {
+            overflow-x: auto;
+            padding: 10px 150px;
+        }
+        
+        .combined-day {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-right: 4px;
+            vertical-align: top;
+            padding-bottom: 16px;
+        }
+        
+        .day {
+            min-width: 40px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .day:hover {
+            transform: translateY(-3px);
+        }
+        
+        .day-number {
+            font-size: 11px;
+            color: #6b5d52;
+            margin-bottom: 4px;
+        }
+        
+        .moon-icon {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            margin-bottom: 5px;
+        }
+        
+        /* Menstrual cycle phases */
+        .menstruation {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c89595 100%);
+        }
+        
+        .follicular {
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4c8b4 100%);
+        }
+        
+        .ovulation {
+            background: linear-gradient(135deg, #c4a57b 0%, #b39570 100%);
+        }
+        
+        .luteal {
+            background: linear-gradient(135deg, #b8a89a 0%, #a89888 100%);
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 5px;
+            padding-top: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+        }
+        
+        .legend-label {
+            font-size: 13px;
+            color: #6b5d52;
+        }
+        
+        .phase-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fafaf8;
+            border-radius: 12px;
+            border-left: 4px solid #c4a57b;
+        }
+        
+        .phase-info h3 {
+            color: #8b7355;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .phase-info p {
+            color: #6b5d52;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .today-marker {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #8b7355;
+            border-radius: 50%;
+        }
+        
+        .today-highlight {
+            border: 2px solid #8b7355 !important;
+            box-shadow: 0 0 8px rgba(139, 115, 85, 0.3) !important;
+        }
+        
+        .month-label {
+            font-size: 10px;
+            color: #a89080;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        
+        .notes-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e8dcc8;
+        }
+        
+        .notes-title {
+            color: #8b7355;
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .notes-subtitle {
+            text-align: center;
+            color: #a89080;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .note-card {
+            background: #fafaf8;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        
+        .menstruation-border {
+            border-left-color: #c89595;
+        }
+        
+        .follicular-border {
+            border-left-color: #d4c8b4;
+        }
+        
+        .ovulation-border {
+            border-left-color: #b39570;
+        }
+        
+        .luteal-border {
+            border-left-color: #a89888;
+        }
+        
+        .note-card h3 {
+            color: #8b7355;
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .note-card textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e8dcc8;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #6b5d52;
+            background: #faf8f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .note-card textarea:focus {
+            outline: none;
+            border-color: #c4a57b;
+            background: white;
+        }
+        
+        .note-card button {
+            width: 100%;
+        }
+        
+        .menstruation-border button {
+            background: #c89595;
+        }
+        
+        .menstruation-border button:hover {
+            background: #b88585;
+        }
+        
+        .follicular-border button {
+            background: #d4c8b4;
+        }
+        
+        .follicular-border button:hover {
+            background: #c4b8a4;
+        }
+        
+        .ovulation-border button {
+            background: #b39570;
+        }
+        
+        .ovulation-border button:hover {
+            background: #a38560;
+        }
+        
+        .luteal-border button {
+            background: #a89888;
+        }
+        
+        .luteal-border button:hover {
+            background: #988878;
+        }
+        
+        .daily-log-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e8dcc8;
+        }
+        
+        .daily-log-title {
+            color: #8b7355;
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .daily-log-title:hover {
+            color: #6b5d52;
+        }
+        
+        .toggle-icon {
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-icon.closed {
+            transform: rotate(180deg);
+        }
+        
+        .daily-log-subtitle {
+            text-align: center;
+            color: #a89080;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        
+        .daily-log-content {
+            display: block;
+            margin-top: 20px;
+        }
+        
+        .daily-log-content.closed {
+            display: none;
+        }
+        
+        .daily-log-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(17, auto);
+            grid-auto-flow: column;
+            gap: 2px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .daily-log-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+        
+        .daily-log-row.menstruation {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c89595 100%);
+        }
+        
+        .daily-log-row.follicular {
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4c8b4 100%);
+        }
+        
+        .daily-log-row.ovulation {
+            background: linear-gradient(135deg, #c4a57b 0%, #b39570 100%);
+        }
+        
+        .daily-log-row.luteal {
+            background: linear-gradient(135deg, #b8a89a 0%, #a89888 100%);
+        }
+        
+        .daily-log-day {
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b5d52;
+            min-width: 60px;
+        }
+        
+        .daily-log-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e8dcc8;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #6b5d52;
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .daily-log-input:focus {
+            outline: none;
+            border-color: #c4a57b;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .daily-log-grid {
+                grid-template-columns: 1fr !important;
+                grid-template-rows: none !important;
+                grid-auto-flow: row !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Lunar Calendar</h1>
+        <p class="subtitle">Highlighting harmony among the moon and me</p>
+        
+        <div class="current-status" id="currentStatus">Today: <strong>Day 2</strong> of your cycle | <strong>Menstruation 🕯️</strong> | Next period in <strong>32 days</strong><br><div style="margin-top: 10px; font-size: 14px; font-style: italic;">On this day, you've felt: Pretty good, but kind of running on empty</div></div>
+        
+        <div class="phase-info" id="phaseInfo">
+                <h3>Menstruation 🕯️</h3>
+                <p><em>Inner Winter.</em> A time of release and renewal. Energy may be lower—honor your need for rest. The body sheds the uterine lining.<br><br><span style="color: #b39570;"><em>Expect:</em> Lower energy, possible cramps, need for rest and warmth.<br><em>Try:</em> Rest without guilt, gentle yoga or stretching, warm baths, nourishing soups, journaling.<br><em>Diet:</em> Iron-rich foods (leafy greens, red meat, lentils), warming soups and stews, omega-3s (salmon, walnuts), dark chocolate for magnesium.</span></p>
+            </div>
+        
+        <div class="timeline">
+            <div class="cycle-track">
+                <div class="track-title">Cycle Calendar</div>
+                <div class="combined-cycles" id="combinedCycles"><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">1</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 18</div>
+                </div><div class="month-label">February</div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Full Moon">🌕</div>
+                    <div class="day-number">2</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 19</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Full Moon">🌕</div>
+                    <div class="day-number">3</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 20</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">4</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 21</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">5</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 22</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">6</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 23</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">7</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 24</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">8</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 25</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Last Quarter">🌗</div>
+                    <div class="day-number">9</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 26</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Last Quarter">🌗</div>
+                    <div class="day-number">10</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 27</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">11</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 28</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">12</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 29</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">13</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 30</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">14</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 31</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">15</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 32</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Crescent">🌘</div>
+                    <div class="day-number">16</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 33</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="New Moon">🌑</div>
+                    <div class="day-number">17</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 34</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">18</div>
+                </div><div class="day menstruation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 1</div>
+                </div></div><div class="combined-day"><div class="day today-highlight">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">19</div>
+                </div><div class="day menstruation today-highlight">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 2</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">20</div>
+                </div><div class="day menstruation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 3</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">21</div>
+                </div><div class="day menstruation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 4</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">22</div>
+                </div><div class="day menstruation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 5</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Crescent">🌒</div>
+                    <div class="day-number">23</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 6</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="First Quarter">🌓</div>
+                    <div class="day-number">24</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 7</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="First Quarter">🌓</div>
+                    <div class="day-number">25</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 8</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">26</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 9</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">27</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 10</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">28</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 11</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">1</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 12</div>
+                </div><div class="month-label">March</div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waxing Gibbous">🌔</div>
+                    <div class="day-number">2</div>
+                </div><div class="day follicular">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 13</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Full Moon">🌕</div>
+                    <div class="day-number">3</div>
+                </div><div class="day ovulation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 14</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Full Moon">🌕</div>
+                    <div class="day-number">4</div>
+                </div><div class="day ovulation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 15</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">5</div>
+                </div><div class="day ovulation">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 16</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">6</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 17</div>
+                </div></div><div class="combined-day"><div class="day">
+                    <div class="moon-icon" title="Waning Gibbous">🌖</div>
+                    <div class="day-number">7</div>
+                </div><div class="day luteal">
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day 18</div>
+                </div></div></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color menstruation"></div>
+                <span class="legend-label">Menstruation (Days 1-5)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color follicular"></div>
+                <span class="legend-label">Follicular (Days 6-13)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color ovulation"></div>
+                <span class="legend-label">Ovulation (Days 14-16)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color luteal"></div>
+                <span class="legend-label">Luteal (Days 17+)</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>First Day of Last Period</label>
+                <input type="date" id="lastPeriodDate">
+            </div>
+            
+            <div class="control-group">
+                <label>Cycle Length (days)</label>
+                <input type="number" id="cycleLength" value="34" min="21" max="45">
+            </div>
+            
+            <button onclick="updateCycles()">Update Calendar</button>
+        </div>
+        
+        <div class="notes-section">
+            <h2 class="notes-title">Cycle Patterns</h2>
+            <p class="notes-subtitle">Track how you feel in each phase to recognize patterns over time</p>
+            
+            <div class="notes-grid">
+                <div class="note-card menstruation-border">
+                    <h3>Menstruation</h3>
+                    <textarea id="notes-menstruation" placeholder="How do you feel during menstruation? Note energy levels, mood, physical symptoms, cravings..."></textarea>
+                    <button onclick="saveNotes(&#39;menstruation&#39;)">Save</button>
+                </div>
+                
+                <div class="note-card follicular-border">
+                    <h3>Follicular Phase</h3>
+                    <textarea id="notes-follicular" placeholder="How do you feel during the follicular phase? Note energy levels, mood, physical symptoms, cravings..."></textarea>
+                    <button onclick="saveNotes(&#39;follicular&#39;)">Save</button>
+                </div>
+                
+                <div class="note-card ovulation-border">
+                    <h3>Ovulation</h3>
+                    <textarea id="notes-ovulation" placeholder="How do you feel during ovulation? Note energy levels, mood, physical symptoms, cravings..."></textarea>
+                    <button onclick="saveNotes(&#39;ovulation&#39;)">Save</button>
+                </div>
+                
+                <div class="note-card luteal-border">
+                    <h3>Luteal Phase</h3>
+                    <textarea id="notes-luteal" placeholder="How do you feel during the luteal phase? Note energy levels, mood, physical symptoms, cravings..."></textarea>
+                    <button onclick="saveNotes(&#39;luteal&#39;)">Save</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="daily-log-section">
+            <h2 class="daily-log-title" onclick="toggleDailyLog()">
+                Daily Notes
+                <span class="toggle-icon" id="toggleIcon">▼</span>
+            </h2>
+            <p class="daily-log-subtitle">Log symptoms for each day of your cycle</p>
+            
+            <div class="daily-log-content" id="dailyLogContent">
+                <div class="daily-log-grid" id="dailyLogGrid"><div class="daily-log-row menstruation"><div class="daily-log-day">Day 1</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-1"></div><div class="daily-log-row menstruation"><div class="daily-log-day">Day 2</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-2"></div><div class="daily-log-row menstruation"><div class="daily-log-day">Day 3</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-3"></div><div class="daily-log-row menstruation"><div class="daily-log-day">Day 4</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-4"></div><div class="daily-log-row menstruation"><div class="daily-log-day">Day 5</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-5"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 6</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-6"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 7</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-7"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 8</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-8"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 9</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-9"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 10</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-10"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 11</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-11"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 12</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-12"></div><div class="daily-log-row follicular"><div class="daily-log-day">Day 13</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-13"></div><div class="daily-log-row ovulation"><div class="daily-log-day">Day 14</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-14"></div><div class="daily-log-row ovulation"><div class="daily-log-day">Day 15</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-15"></div><div class="daily-log-row ovulation"><div class="daily-log-day">Day 16</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-16"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 17</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-17"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 18</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-18"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 19</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-19"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 20</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-20"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 21</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-21"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 22</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-22"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 23</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-23"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 24</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-24"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 25</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-25"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 26</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-26"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 27</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-27"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 28</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-28"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 29</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-29"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 30</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-30"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 31</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-31"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 32</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-32"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 33</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-33"></div><div class="daily-log-row luteal"><div class="daily-log-day">Day 34</div><input type="text" class="daily-log-input" placeholder="Note symptoms..." id="daily-log-34"></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Moon phase calculation
+        function getMoonPhase(date) {
+            const knownNewMoon = new Date('2000-01-06');
+            const lunarCycle = 29.53058867;
+            const diff = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
+            const phase = ((diff % lunarCycle) + lunarCycle) % lunarCycle;
+            
+            if (phase < 1.84566) return { name: 'New Moon', icon: '🌑' };
+            if (phase < 7.38264) return { name: 'Waxing Crescent', icon: '🌒' };
+            if (phase < 9.22831) return { name: 'First Quarter', icon: '🌓' };
+            if (phase < 14.76529) return { name: 'Waxing Gibbous', icon: '🌔' };
+            if (phase < 16.61096) return { name: 'Full Moon', icon: '🌕' };
+            if (phase < 22.14794) return { name: 'Waning Gibbous', icon: '🌖' };
+            if (phase < 23.99361) return { name: 'Last Quarter', icon: '🌗' };
+            if (phase < 29.53059) return { name: 'Waning Crescent', icon: '🌘' };
+            return { name: 'New Moon', icon: '🌑' };
+        }
+        
+        // Get menstrual phase info
+        function getPhaseInfo(phase) {
+            const info = {
+                menstruation: {
+                    title: 'Menstruation 🕯️',
+                    description: '<em>Inner Winter.</em> A time of release and renewal. Energy may be lower—honor your need for rest. The body sheds the uterine lining.',
+                    guidance: '<span style="color: #8b7355;"><strong><em>Expect:</em></strong> Lower energy, possible cramps, need for rest and warmth.</span><br><span style="color: #7a6345;"><strong><em>Try:</em></strong> Rest without guilt, gentle yoga or stretching, warm baths, nourishing soups, journaling.</span><br><span style="color: #6a5335;"><strong><em>Diet:</em></strong> Iron-rich foods (leafy greens, red meat, lentils), warming soups and stews, omega-3s (salmon, walnuts), dark chocolate for magnesium.</span>'
+                },
+                follicular: {
+                    title: 'Follicular Phase 🌷',
+                    description: '<em>Inner Spring.</em> Rising energy and optimism. Like the waxing moon, this is a time of growth and new beginnings. Estrogen rises, bringing mental clarity.',
+                    guidance: '<span style="color: #8b7355;"><strong><em>Expect:</em></strong> Rising energy, mental clarity, creativity, optimism.</span><br><span style="color: #7a6345;"><strong><em>Try:</em></strong> Start new projects, challenging workouts, brainstorming, socializing, planning ahead.</span><br><span style="color: #6a5335;"><strong><em>Diet:</em></strong> Lean proteins (chicken, eggs, tofu), fermented foods (yogurt, kimchi), fresh vegetables, seeds (flax, pumpkin).</span>'
+                },
+                ovulation: {
+                    title: 'Ovulation ✨',
+                    description: '<em>Inner Summer.</em> Peak energy and radiance. Like the full moon, you may feel most vibrant, social, and confident. Fertility is at its highest.',
+                    guidance: '<span style="color: #8b7355;"><strong><em>Expect:</em></strong> Peak energy, confidence, high libido, strong communication skills.</span><br><span style="color: #7a6345;"><strong><em>Try:</em></strong> Important meetings or presentations, intense workouts, social events, creative expression.</span><br><span style="color: #6a5335;"><strong><em>Diet:</em></strong> Light, raw foods (salads, smoothies, fresh fruits), anti-inflammatory foods (berries, turmeric), fiber-rich vegetables, stay hydrated.</span>'
+                },
+                luteal: {
+                    title: 'Luteal Phase 🍂',
+                    description: '<em>Inner Autumn.</em> Energy begins to turn inward. Like the waning moon, this is a time for completion and reflection. Progesterone rises, preparing for either pregnancy or menstruation.',
+                    guidance: '<span style="color: #8b7355;"><strong><em>Expect:</em></strong> Gradual energy decline, possible mood shifts, desire to slow down, increased appetite.</span><br><span style="color: #7a6345;"><strong><em>Try:</em></strong> Complete tasks in progress, moderate exercise (walking, pilates), meal prep, organizing, winding down.</span><br><span style="color: #6a5335;"><strong><em>Diet:</em></strong> Complex carbs (sweet potatoes, quinoa, oats), magnesium-rich foods (nuts, seeds, dark leafy greens), B-vitamins (whole grains, eggs), calcium for reduced cramping.</span>'
+                }
+            };
+            return info[phase];
+        }
+        
+        // Calculate which phase a day falls into
+        function getMenstrualPhase(dayNumber) {
+            if (dayNumber <= 5) return 'menstruation';
+            if (dayNumber <= 13) return 'follicular';
+            if (dayNumber <= 16) return 'ovulation';
+            return 'luteal';
+        }
+        
+        // Save cycle settings to localStorage
+        function saveSettings() {
+            const settings = {
+                lastPeriodDate: document.getElementById('lastPeriodDate').value,
+                cycleLength: document.getElementById('cycleLength').value
+            };
+            localStorage.setItem('cycleSettings', JSON.stringify(settings));
+        }
+        
+        // Load saved cycle settings
+        function loadSettings() {
+            const saved = localStorage.getItem('cycleSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.getElementById('lastPeriodDate').value = settings.lastPeriodDate;
+                document.getElementById('cycleLength').value = settings.cycleLength;
+                return true;
+            }
+            return false;
+        }
+        
+        // Save notes to localStorage
+        function saveNotes(phase) {
+            const textarea = document.getElementById(`notes-${phase}`);
+            const notes = textarea.value;
+            localStorage.setItem(`cycleNotes-${phase}`, notes);
+            
+            const button = textarea.nextElementSibling;
+            const originalText = button.textContent;
+            button.textContent = 'Saved ✓';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Load saved notes
+        function loadNotes() {
+            const phases = ['menstruation', 'follicular', 'ovulation', 'luteal'];
+            phases.forEach(phase => {
+                const savedNotes = localStorage.getItem(`cycleNotes-${phase}`);
+                if (savedNotes) {
+                    document.getElementById(`notes-${phase}`).value = savedNotes;
+                }
+            });
+        }
+        
+        // Calculate current cycle day based on last period
+        function getCurrentCycleDay() {
+            const lastPeriodDate = document.getElementById('lastPeriodDate').value;
+            if (!lastPeriodDate) return null;
+            
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const lastPeriod = new Date(lastPeriodDate);
+            lastPeriod.setHours(0, 0, 0, 0);
+            
+            // Calculate days since last period started
+            const daysSince = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
+            
+            // Use the same formula as the calendar: (i % cycleLength) + 1
+            const cycleDay = (daysSince % cycleLength) + 1;
+            return cycleDay;
+        }
+        
+        function updateCycles() {
+            const lastPeriodDateValue = document.getElementById('lastPeriodDate').value;
+            
+            if (!lastPeriodDateValue) {
+                alert('Please enter the first day of your last period');
+                return;
+            }
+            
+            // Save settings
+            saveSettings();
+            
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const lastPeriodDate = new Date(lastPeriodDateValue);
+            
+            // Calculate current position in cycle
+            const currentDay = getCurrentCycleDay();
+            const currentPhase = getMenstrualPhase(currentDay);
+            const currentPhaseInfo = getPhaseInfo(currentPhase);
+            const daysUntilPeriod = cycleLength - currentDay;
+            
+            // Update status display
+            const todaySymptom = localStorage.getItem(`dailyLog-${currentDay}`) || '';
+            const symptomPreview = todaySymptom ? `<br><div style="margin-top: 10px; font-size: 14px; font-style: italic;">On this day, you've felt: ${todaySymptom}</div>` : '';
+            
+            document.getElementById('currentStatus').innerHTML = 
+                `Today: <strong>Day ${currentDay}</strong> of your cycle | <strong>${currentPhaseInfo.title}</strong> | Next period in <strong>${daysUntilPeriod} days</strong>
+                <div style="margin-top: 12px; font-size: 14px; font-style: italic; opacity: 0.95;">${currentPhaseInfo.description.split('<br><br>')[0]}</div>${symptomPreview}`;
+            
+            // Update phase info
+            
+            // Update phase info section with guidance
+            document.getElementById('phaseInfo').innerHTML = `
+                <p>${currentPhaseInfo.guidance}</p>
+            `;
+            
+            const combinedContainer = document.getElementById('combinedCycles');
+            combinedContainer.innerHTML = '';
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Calculate how many days since last period to find where to start
+            const daysSinceLastPeriod = Math.floor((today - lastPeriodDate) / (1000 * 60 * 60 * 24));
+            
+            let todayIndex = 17; // Today will be at index 17 (17 days shown before it)
+            let lastMonth = -1;
+            
+            // Mobile vs desktop day count
+            const isMobile = window.innerWidth <= 768;
+            const totalDays = isMobile ? 15 : 18;
+            const beforeToday = isMobile ? 7 : 9;
+            const startOffset = daysSinceLastPeriod - beforeToday;
+            
+            for (let i = 0; i < totalDays; i++) {
+                const currentDate = new Date(lastPeriodDate);
+                currentDate.setDate(lastPeriodDate.getDate() + startOffset + i);
+                currentDate.setHours(0, 0, 0, 0);
+                
+                // Check if this is today using multiple methods
+                const isToday = (
+                    currentDate.getDate() === today.getDate() &&
+                    currentDate.getMonth() === today.getMonth() &&
+                    currentDate.getFullYear() === today.getFullYear()
+                );
+                
+                // Create combined day container
+                const combinedDay = document.createElement('div');
+                combinedDay.className = 'combined-day';
+                
+                // Moon day
+                const moonPhase = getMoonPhase(currentDate);
+                const moonDay = document.createElement('div');
+                moonDay.className = 'day';
+                if (isToday) {
+                    moonDay.className += ' today-highlight';
+                }
+                moonDay.innerHTML = `
+                    <div class="moon-icon" title="${moonPhase.name}">${moonPhase.icon}</div>
+                    <div class="day-number">${currentDate.getDate()}</div>
+                `;
+                
+                // Menstrual day
+                const absoluteDaysSince = startOffset + i;
+                const cycleDay = (absoluteDaysSince % cycleLength) + 1;
+                const phase = getMenstrualPhase(cycleDay);
+                const menstrualDay = document.createElement('div');
+                menstrualDay.className = `day ${phase}`;
+                if (isToday) {
+                    menstrualDay.className += ' today-highlight';
+                }
+                menstrualDay.innerHTML = `
+                    <div style="font-size: 11px; color: #6b5d52; font-weight: 500;">Day ${cycleDay}</div>
+                `;
+                
+                // Add both to combined container
+                combinedDay.appendChild(moonDay);
+                combinedDay.appendChild(menstrualDay);
+                
+                // Add month label if it's the first day of a new month
+                const currentMonth = currentDate.getMonth();
+                if (currentMonth !== lastMonth) {
+                    const monthLabel = document.createElement('div');
+                    monthLabel.className = 'month-label';
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                       'July', 'August', 'September', 'October', 'November', 'December'];
+                    monthLabel.textContent = monthNames[currentMonth];
+                    combinedDay.appendChild(monthLabel);
+                    lastMonth = currentMonth;
+                }
+                
+                combinedContainer.appendChild(combinedDay);
+            }
+            
+            // Auto-scroll to center (today is at index 17)
+            setTimeout(() => {
+                const dayWidth = 44; // 40px width + 4px gap
+                const containerWidth = combinedContainer.offsetWidth;
+                const scrollPosition = (todayIndex * dayWidth) - (containerWidth / 2) + (dayWidth / 2);
+                combinedContainer.scrollLeft = Math.max(0, scrollPosition);
+            }, 100);
+        }
+        
+        // Toggle daily log visibility
+        function toggleDailyLog() {
+            const content = document.getElementById('dailyLogContent');
+            const icon = document.getElementById('toggleIcon');
+            content.classList.toggle('closed');
+            icon.classList.toggle('closed');
+        }
+        
+        // Generate daily log rows
+        function generateDailyLog() {
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const grid = document.getElementById('dailyLogGrid');
+            grid.innerHTML = '';
+            
+            for (let day = 1; day <= cycleLength; day++) {
+                const phase = getMenstrualPhase(day);
+                const row = document.createElement('div');
+                row.className = `daily-log-row ${phase}`;
+                
+                const dayLabel = document.createElement('div');
+                dayLabel.className = 'daily-log-day';
+                dayLabel.textContent = `Day ${day}`;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'daily-log-input';
+                input.placeholder = 'Note symptoms...';
+                input.id = `daily-log-${day}`;
+                input.addEventListener('blur', () => saveDailyLog(day));
+                
+                row.appendChild(dayLabel);
+                row.appendChild(input);
+                grid.appendChild(row);
+            }
+            
+            loadDailyLog();
+        }
+        
+        // Save daily log entry
+        function saveDailyLog(day) {
+            const input = document.getElementById(`daily-log-${day}`);
+            localStorage.setItem(`dailyLog-${day}`, input.value);
+            
+            // Update status bar if this is today's entry
+            const currentDay = getCurrentCycleDay();
+            if (day === currentDay) {
+                updateCycles();
+            }
+        }
+        
+        // Load saved daily log entries
+        function loadDailyLog() {
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            for (let day = 1; day <= cycleLength; day++) {
+                const saved = localStorage.getItem(`dailyLog-${day}`);
+                const input = document.getElementById(`daily-log-${day}`);
+                if (saved && input) {
+                    input.value = saved;
+                }
+            }
+        }
+        
+        // Initialize on load
+        const hasSettings = loadSettings();
+        loadNotes();
+        
+        // If we have saved settings, automatically update the timeline
+        if (hasSettings && document.getElementById('lastPeriodDate').value) {
+            updateCycles();
+        } else {
+            // Set a default date (Jan 26, 2025 - 14 days ago, for ovulation timing)
+            const defaultDate = new Date('2025-01-26');
+            document.getElementById('lastPeriodDate').value = defaultDate.toISOString().split('T')[0];
+        }
+        
+        // Generate daily log
+        generateDailyLog();
+    </script>
+
+</body></html>
